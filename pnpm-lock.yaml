@@ -6,6 +6,8 @@ specifiers:
   '@babel/traverse': ^7.19.1
   '@babel/types': ^7.19.0
   '@types/babel__core': ^7.1.19
+  '@types/babel__generator': ^7.6.4
+  '@types/babel__traverse': ^7.18.1
   '@types/node': ^18.7.18
   posthtml: ^0.16.6
   vite: ^3.1.3
@@ -19,6 +21,8 @@ dependencies:
 
 devDependencies:
   '@types/babel__core': 7.1.19
+  '@types/babel__generator': 7.6.4
+  '@types/babel__traverse': 7.18.1
   '@types/node': 18.7.18
   vite: 3.1.3
 
