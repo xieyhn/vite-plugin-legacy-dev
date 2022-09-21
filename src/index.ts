@@ -23,7 +23,7 @@ const transformESMToSystemjs = (code: string) => swcTransform(code, {
       syntax: 'typescript',
       tsx: false,
     },
-    target: 'es3',
+    target: 'es5',
     minify: {
       compress: false,
     },
