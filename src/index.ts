@@ -5,6 +5,7 @@ import posthtml from 'posthtml'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { transform as swcTransform } from '@swc/core'
+import { name as pkgName } from '../package.json'
 
 const COREJS_PATH = '/@legacydev/corejs3'
 const FETCH_PATH = '/@legacydev/fetch'
@@ -65,7 +66,7 @@ const vitePluginLegacyDev = (): Plugin => {
       server.middlewares.use(async (req, res, next) => {
         if (req.url && helpers.has(req.url)) {
           const content = await fs.readFile(
-            path.resolve(config.root, 'core-js-bundle/index.js'),
+            path.resolve(config.root, `node_modules/${pkgName}/node_modules`, helpers.get(req.url)!),
             'utf-8',
           )
           return send(req, res, content.toString(), 'js', {})
