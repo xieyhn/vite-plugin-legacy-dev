@@ -2,6 +2,13 @@
   "name": "vite-plugin-legacy-dev",
   "version": "1.0.0",
   "description": "Vite plugin-legacy for dev.",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "type": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint . --ext .ts,.js --fix"
+  },
   "keywords": [
     "vite-plugin",
     "legacy"
@@ -17,6 +24,13 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint": "^8.23.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "tsup": "^6.2.3",
+    "typescript": "^4.8.3",
     "vite": "^3.1.3"
   },
   "peerDependencies": {

@@ -1,46 +1,49 @@
-import { Plugin, send, ViteDevServer } from 'vite'
+import {
+  Plugin, send, ViteDevServer, ResolvedConfig,
+} from 'vite'
 import posthtml from 'posthtml'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { transform as swcTransform } from '@swc/core'
 
 const COREJS_PATH = '/@legacydev/corejs3'
-const FETCH_POLYFILL_PATH = '/@legacydev/polyfill-fetch'
+const FETCH_PATH = '/@legacydev/fetch'
 const SYSTEMJS_PATH = '/@legacydev/systemjs'
-const NODE_MODULES_DIR = path.join(process.cwd(), 'node_modules')
 
-const transformESMToSystemjs = (code: string, filename: string) => {
-  return swcTransform(code, {
-    jsc: {
-      parser: {
-        syntax: 'typescript',
-        tsx: false
-      },
-      target: 'es3',
-      minify: {
-        compress: false
-      }
+// Map is ordered
+const helpers = new Map<string, string>()
+helpers.set(COREJS_PATH, 'core-js-bundle/index.js')
+helpers.set(FETCH_PATH, 'whatwg-fetch/dist/fetch.umd.js')
+helpers.set(SYSTEMJS_PATH, 'systemjs/dist/system.js')
+
+const transformESMToSystemjs = (code: string) => swcTransform(code, {
+  jsc: {
+    parser: {
+      syntax: 'typescript',
+      tsx: false,
     },
-    module: {
-      // @ts-expect-error
-      type: 'systemjs'
-    }
-  })
-}
+    target: 'es3',
+    minify: {
+      compress: false,
+    },
+  },
+  module: {
+    // @ts-expect-error swc types not support
+    type: 'systemjs',
+  },
+})
 
 const vitePluginLegacyDev = (): Plugin => {
   let server: ViteDevServer
+  let config: ResolvedConfig
 
   const vitePluginLegacyDevPostTransform: Plugin = {
     name: 'vite-plugin-legacy-dev-post-transform',
 
     async transform(code, id) {
       if (new URLSearchParams(id.split('?')[1] || '').has('direct')) return
-
-      const transformResult = await transformESMToSystemjs(code, id)
-
       return {
-        code: transformResult.code
+        code: (await transformESMToSystemjs(code)).code,
       }
     },
   }
@@ -50,8 +53,9 @@ const vitePluginLegacyDev = (): Plugin => {
     apply: 'serve',
     enforce: 'post',
 
-    configResolved(config) {
-      // @ts-expect-error
+    configResolved(_config) {
+      config = _config
+      // @ts-expect-error ---
       config.plugins.push(vitePluginLegacyDevPostTransform)
     },
 
@@ -59,32 +63,13 @@ const vitePluginLegacyDev = (): Plugin => {
       server = _server
 
       server.middlewares.use(async (req, res, next) => {
-        if (req.url === COREJS_PATH) {
+        if (req.url && helpers.has(req.url)) {
           const content = await fs.readFile(
-            path.resolve(NODE_MODULES_DIR, 'core-js-bundle/index.js'),
-            'utf-8'
+            path.resolve(config.root, 'core-js-bundle/index.js'),
+            'utf-8',
           )
           return send(req, res, content.toString(), 'js', {})
         }
-
-        // fetch-polyfill
-        if (req.url === FETCH_POLYFILL_PATH) {
-          const content = await fs.readFile(
-            path.resolve(NODE_MODULES_DIR, 'whatwg-fetch/dist/fetch.umd.js'),
-            'utf-8'
-          )
-          return send(req, res, content.toString(), 'js', {})
-        }
-
-        // systemjs
-        if (req.url === SYSTEMJS_PATH) {
-          const content = await fs.readFile(
-            path.resolve(NODE_MODULES_DIR, 'systemjs/dist/system.js'),
-            'utf-8'
-          )
-          return send(req, res, content.toString(), 'js', {})
-        }
-
         next()
       })
     },
@@ -94,47 +79,29 @@ const vitePluginLegacyDev = (): Plugin => {
 
       async transform(html) {
         const result = await posthtml([
-          tree => {
-            tree.match({ tag: 'script' }, node => {
+          (tree) => {
+            tree.match({ tag: 'script' }, (node) => {
               const attrs = node.attrs as Record<string, string> | undefined
-
               if (attrs && attrs.type === 'module') {
                 attrs.type = 'systemjs-module'
               }
-
               return node
             })
-          }
+          },
         ])
           .process(html)
 
         return {
           html: result.html,
-          tags: [
-            {
-              tag: 'script',
-              injectTo: 'head-prepend',
-              attrs: {
-                src: COREJS_PATH
-              }
+          tags: Array.from(helpers.keys()).map((src) => ({
+            tag: 'script',
+            injectTo: 'head-prepend',
+            attrs: {
+              src,
             },
-            {
-              tag: 'script',
-              injectTo: 'head-prepend',
-              attrs: {
-                src: FETCH_POLYFILL_PATH
-              }
-            },
-            {
-              tag: 'script',
-              injectTo: 'head-prepend',
-              attrs: {
-                src: SYSTEMJS_PATH
-              }
-            }
-          ]
+          })),
         }
-      }
+      },
     },
   }
 }
