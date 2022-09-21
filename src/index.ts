@@ -2,32 +2,33 @@ import { Plugin, send, ViteDevServer } from 'vite'
 import posthtml from 'posthtml'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { transformAsync } from '@babel/core'
+import { transform as swcTransform } from '@swc/core'
 
-const POLYFILL_PATH = '/@iedev/polyfill'
-const FETCH_POLYFILL_PATH = '/@iedev/polyfill-fetch'
-const SYSTEMJS_PATH = '/@iedev/systemjs'
+const COREJS_PATH = '/@legacydev/corejs3'
+const FETCH_POLYFILL_PATH = '/@legacydev/polyfill-fetch'
+const SYSTEMJS_PATH = '/@legacydev/systemjs'
 const NODE_MODULES_DIR = path.join(process.cwd(), 'node_modules')
 
-const isViteClientPath = (url: string) => url.includes('@vite') || url.includes('vite/dist/client')
-
-const transformESMToSystemjs = (code: string, filename: string, { ast }: { ast: boolean }) => {
-  return transformAsync(code, {
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          modules: 'systemjs',
-          useBuiltIns: false
-        }
-      ]
-    ],
-    filename,
-    ast,
+const transformESMToSystemjs = (code: string, filename: string) => {
+  return swcTransform(code, {
+    jsc: {
+      parser: {
+        syntax: 'typescript',
+        tsx: false
+      },
+      target: 'es3',
+      minify: {
+        compress: false
+      }
+    },
+    module: {
+      // @ts-expect-error
+      type: 'systemjs'
+    }
   })
 }
 
-const vitePluginIEDev = (): Plugin => {
+const vitePluginLegacyDev = (): Plugin => {
   let server: ViteDevServer
 
   const vitePluginLegacyDevPostTransform: Plugin = {
@@ -36,15 +37,10 @@ const vitePluginIEDev = (): Plugin => {
     async transform(code, id) {
       if (new URLSearchParams(id.split('?')[1] || '').has('direct')) return
 
-      if (isViteClientPath(id)) {
-        code = (await transformAsync(code)).code
-      }
-
-      const transformResult = await transformESMToSystemjs(code, id, { ast: true })
+      const transformResult = await transformESMToSystemjs(code, id)
 
       return {
-        code: transformResult.code,
-        map: { mappings: '' }
+        code: transformResult.code
       }
     },
   }
@@ -63,8 +59,7 @@ const vitePluginIEDev = (): Plugin => {
       server = _server
 
       server.middlewares.use(async (req, res, next) => {
-        // core-js@3
-        if (req.url === POLYFILL_PATH) {
+        if (req.url === COREJS_PATH) {
           const content = await fs.readFile(
             path.resolve(NODE_MODULES_DIR, 'core-js-bundle/index.js'),
             'utf-8'
@@ -120,7 +115,7 @@ const vitePluginIEDev = (): Plugin => {
               tag: 'script',
               injectTo: 'head-prepend',
               attrs: {
-                src: POLYFILL_PATH
+                src: COREJS_PATH
               }
             },
             {
@@ -144,4 +139,4 @@ const vitePluginIEDev = (): Plugin => {
   }
 }
 
-export default vitePluginIEDev
+export default vitePluginLegacyDev

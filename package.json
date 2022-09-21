@@ -9,14 +9,13 @@
   "author": "xieyuhang",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.19.1",
+    "@swc/core": "^1.3.2",
     "core-js-bundle": "^3.25.2",
     "posthtml": "^0.16.6",
     "systemjs": "^6.12.6",
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.1.19",
     "@types/node": "^18.7.18",
     "vite": "^3.1.3"
   },
