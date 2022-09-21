@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-legacy-dev",
-  "version": "1.0.0",
-  "description": "Vite plugin-legacy for dev.",
+  "version": "0.0.0",
+  "description": "Vite plugin-legacy for development env.",
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "type": "dist/index.d.ts",
@@ -11,10 +11,10 @@
   },
   "keywords": [
     "vite-plugin",
-    "legacy"
+    "legacy",
+    "legacy-dev"
   ],
   "author": "xieyuhang",
-  "license": "ISC",
   "dependencies": {
     "@swc/core": "^1.3.2",
     "core-js-bundle": "^3.25.2",
