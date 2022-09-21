@@ -5,3 +5,4 @@ Vite plugin-legacy for dev. **WIP**
 TODO:
 + [ ] normalize API
 + [ ] cache
++ [ ] swc => babel
