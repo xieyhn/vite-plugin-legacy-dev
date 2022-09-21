@@ -1,18 +1,18 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2021: true
   },
   extends: [
-    'airbnb-base',
+    'airbnb-base'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module',
+    sourceType: 'module'
   },
   plugins: [
-    '@typescript-eslint',
+    '@typescript-eslint'
   ],
   rules: {
     'no-undef': 'off',
@@ -21,5 +21,6 @@ module.exports = {
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
     'consistent-return': 'off',
-  },
+    'comma-dangle': ['error', 'never']
+  }
 }
