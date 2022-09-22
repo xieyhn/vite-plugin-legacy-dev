@@ -1,6 +1,6 @@
 # vite-plugin-legacy-dev
 
-Make your vite projects work in IE and other ancient browsers.
+Make your Vite projects work in IE and other ancient browsers.
 
 ## Install
 
