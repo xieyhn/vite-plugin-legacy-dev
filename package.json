@@ -19,6 +19,7 @@
   "dependencies": {
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
+    "@webcomponents/webcomponentsjs": "^2.6.0",
     "core-js-bundle": "^3.25.2",
     "posthtml": "^0.16.6",
     "systemjs": "^6.12.6",

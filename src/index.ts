@@ -10,11 +10,13 @@ import { name as pkgName } from '../package.json'
 const COREJS_PATH = '/@legacydev/corejs3'
 const FETCH_PATH = '/@legacydev/fetch'
 const SYSTEMJS_PATH = '/@legacydev/systemjs'
+const WEBCOMPONENTS_PATH = '/@legacydev/webcomponents'
 
 // Map is ordered
 const helpers = new Map<string, string>([
   [COREJS_PATH, 'core-js-bundle/index.js'],
   [FETCH_PATH, 'whatwg-fetch/dist/fetch.umd.js'],
+  [WEBCOMPONENTS_PATH, '@webcomponents/webcomponentsjs/webcomponents-bundle.js'],
   [SYSTEMJS_PATH, 'systemjs/dist/system.js']
 ])
 

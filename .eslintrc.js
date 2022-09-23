@@ -21,6 +21,7 @@ module.exports = {
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
     'consistent-return': 'off',
-    'comma-dangle': ['error', 'never']
+    'comma-dangle': ['error', 'never'],
+    'import/prefer-default-export': 'off'
   }
 }

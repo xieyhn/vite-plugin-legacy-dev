@@ -1,10 +1,12 @@
-import { createApp, h, Component } from 'vue'
-import { add } from './helper'
+import Vue from 'vue'
+import App from './App.vue'
 
-const App: Component = {
-  render() {
-    return h('div', `1 + 2 = ${add(1, 2)}`)
+import './index.css'
+
+const app = new Vue({
+  render(createElement) {
+    return createElement(App)
   }
-}
+})
 
-createApp(App).mount('#app')
+app.$mount('#app')
