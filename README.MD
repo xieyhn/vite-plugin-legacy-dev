@@ -4,6 +4,9 @@ Maybe your Vite project needs work on IE11 or other not support ESM legacy brows
 
 > This is only for development.
 
+**TODO:**
++ tests
+
 ## Install
 
 ```shell
