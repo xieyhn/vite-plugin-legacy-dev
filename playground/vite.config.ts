@@ -7,5 +7,9 @@ export default defineConfig({
   plugins: [
     vue(),
     legacyDev()
-  ]
+  ],
+  server: {
+    port: 5173,
+    strictPort: true
+  }
 })
