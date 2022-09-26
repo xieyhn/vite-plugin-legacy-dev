@@ -1,11 +1,8 @@
 # vite-plugin-legacy-dev
 
-**WIP** Maybe your Vite project needs work on IE11 or other not support ESM legacy browsers, this plugin can help you!
+Maybe your Vite project needs work on IE11 or other not support ESM legacy browsers, this plugin can help you!
 
 > This is only for development.
-
-**TODO:**
-+ tests
 
 ## Install
 
