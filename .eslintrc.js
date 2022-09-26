@@ -22,6 +22,8 @@ module.exports = {
     quotes: ['error', 'single'],
     'consistent-return': 'off',
     'comma-dangle': ['error', 'never'],
-    'import/prefer-default-export': 'off'
+    'import/prefer-default-export': 'off',
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off'
   }
 }
