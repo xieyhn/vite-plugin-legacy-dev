@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "types": [
+      "vite/client"
+    ]
+  }
+}
